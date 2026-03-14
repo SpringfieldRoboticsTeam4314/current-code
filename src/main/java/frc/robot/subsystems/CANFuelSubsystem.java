@@ -46,7 +46,12 @@ public class CANFuelSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intaking feeder roller value", INTAKING_FEEDER_VOLTAGE);
     SmartDashboard.putNumber("Intaking intake roller value", INTAKING_INTAKE_VOLTAGE);
     SmartDashboard.putNumber("Launching feeder roller value", LAUNCHING_FEEDER_VOLTAGE);
-    SmartDashboard.putNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE);
+  // Two editable presets for the launcher voltage so operators can tune values on the dashboard
+    SmartDashboard.putNumber("Launcher preset A", LAUNCHING_LAUNCHER_VOLTAGE);
+    SmartDashboard.putNumber("Launcher preset B", LAUNCHING_LAUNCHER_VOLTAGE_ALT);
+  // The active launcher roller value is kept in this key; initialize it to preset A
+    SmartDashboard.putNumber("Launching launcher roller value",
+    SmartDashboard.getNumber("Launcher preset A", LAUNCHING_LAUNCHER_VOLTAGE));
     SmartDashboard.putNumber("Spin-up feeder roller value", SPIN_UP_FEEDER_VOLTAGE);
 
     // create the configuration for the feeder roller, set a current limit and apply
@@ -117,9 +122,10 @@ public class CANFuelSubsystem extends SubsystemBase {
    * This allows an operator button to cycle between two preset launcher voltages.
    */
   public void toggleLauncherVoltage() {
-    double primary = LAUNCHING_LAUNCHER_VOLTAGE;
-    double alt = LAUNCHING_LAUNCHER_VOLTAGE_ALT;
-    double current = SmartDashboard.getNumber("Launching launcher roller value", primary);
+  // Read the editable presets from the dashboard (so they can be changed at runtime)
+  double primary = SmartDashboard.getNumber("Launcher preset A", LAUNCHING_LAUNCHER_VOLTAGE);
+  double alt = SmartDashboard.getNumber("Launcher preset B", LAUNCHING_LAUNCHER_VOLTAGE_ALT);
+  double current = SmartDashboard.getNumber("Launching launcher roller value", primary);
     double newVal;
     // Choose alt if currently at (or near) primary, otherwise revert to primary
     if (Math.abs(current - primary) < 1e-6) {
