@@ -12,6 +12,7 @@ import static frc.robot.Constants.FuelConstants.INTAKING_INTAKE_VOLTAGE;
 import static frc.robot.Constants.FuelConstants.LAUNCHER_MOTOR_CURRENT_LIMIT;
 import static frc.robot.Constants.FuelConstants.LAUNCHING_FEEDER_VOLTAGE;
 import static frc.robot.Constants.FuelConstants.LAUNCHING_LAUNCHER_VOLTAGE;
+import static frc.robot.Constants.FuelConstants.LAUNCHING_LAUNCHER_VOLTAGE_ALT;
 import static frc.robot.Constants.FuelConstants.SPIN_UP_FEEDER_VOLTAGE;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -22,11 +23,15 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CANFuelSubsystem extends SubsystemBase {
   private final SparkMax feederRoller;
   private final SparkMax intakeLauncherRoller;
+  // Track whether we're using the alternate launcher voltage; useful for dashboard
+  private boolean usingAltLauncherVoltage = false;
 
   /** Creates a new CANBallSubsystem. */
   public CANFuelSubsystem() {
@@ -104,6 +109,37 @@ public class CANFuelSubsystem extends SubsystemBase {
   public void spinUpLauncher() {
     intakeLauncherRoller
         .setVoltage(SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE));
+  }
+
+  /**
+   * Toggle the "Launching launcher roller value" on the SmartDashboard between the
+   * default LAUNCHING_LAUNCHER_VOLTAGE and LAUNCHING_LAUNCHER_VOLTAGE_ALT.
+   * This allows an operator button to cycle between two preset launcher voltages.
+   */
+  public void toggleLauncherVoltage() {
+    double primary = LAUNCHING_LAUNCHER_VOLTAGE;
+    double alt = LAUNCHING_LAUNCHER_VOLTAGE_ALT;
+    double current = SmartDashboard.getNumber("Launching launcher roller value", primary);
+    double newVal;
+    // Choose alt if currently at (or near) primary, otherwise revert to primary
+    if (Math.abs(current - primary) < 1e-6) {
+      newVal = alt;
+      usingAltLauncherVoltage = true;
+    } else {
+      newVal = primary;
+      usingAltLauncherVoltage = false;
+    }
+    SmartDashboard.putNumber("Launching launcher roller value", newVal);
+    SmartDashboard.putBoolean("Launcher using alt voltage", usingAltLauncherVoltage);
+    // Report to the Driver Station so the operator/driver can see which preset is active
+    DriverStation.reportWarning(String.format("Launcher voltage set to %.2f (alt=%b)", newVal, usingAltLauncherVoltage), false);
+  }
+
+  /**
+   * A command wrapper that toggles the launcher voltage once when scheduled.
+   */
+  public Command toggleLauncherVoltageCommand() {
+    return new InstantCommand(() -> toggleLauncherVoltage(), this);
   }
 
   // A command factory to turn the spinUp method into a command that requires this

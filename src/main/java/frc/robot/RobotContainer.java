@@ -90,6 +90,9 @@ public class RobotContainer {
     operatorController.button(5)
         .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.spin(), () -> ballSubsystem.stop()));
 
+  // Press button 4 to cycle the launcher voltage between two presets
+  operatorController.button(4).onTrue(ballSubsystem.toggleLauncherVoltageCommand());
+
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the

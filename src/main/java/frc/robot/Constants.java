@@ -43,6 +43,8 @@ public final class Constants {
     public static final double INTAKING_INTAKE_VOLTAGE = -6;
     public static final double LAUNCHING_FEEDER_VOLTAGE = -9;
     public static final double LAUNCHING_LAUNCHER_VOLTAGE = -8;
+  // Alternate launcher voltage to cycle to from the operator controller button
+  public static final double LAUNCHING_LAUNCHER_VOLTAGE_ALT = -12;
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
     public static final double SPIN_UP_SECONDS = 2;
 
