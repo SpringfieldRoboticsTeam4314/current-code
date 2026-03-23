@@ -40,7 +40,7 @@ public final class Constants {
     // based on exact robot construction.
     // See the Software Guide for tuning information            DO NOT JUST COPY THESE VALUES TO YOUR ROBOT WITHOUT TESTING THEM FIRST. 
     public static final double INTAKING_FEEDER_VOLTAGE = 8;
-    public static final double INTAKING_INTAKE_VOLTAGE = -6;
+    public static final double INTAKING_INTAKE_VOLTAGE = -4;
     public static final double LAUNCHING_FEEDER_VOLTAGE = -9;
     public static final double LAUNCHING_LAUNCHER_VOLTAGE = -8;
   // Alternate launcher voltage to cycle to from the operator controller button
