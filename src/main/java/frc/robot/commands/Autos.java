@@ -30,7 +30,7 @@ public final class Autos {
     // Ensure the launch command is explicitly followed by a guaranteed stop that
     // requires the subsystem. This avoids leaving the motors at the last
     // commanded voltage if the launch command is interrupted or times out.
-    ballSubsystem.launchCommand().withTimeout(2)
+    ballSubsystem.launchCommand().withTimeout(5)
       .andThen(Commands.runOnce(() -> ballSubsystem.stop(), ballSubsystem)));
   }
 
@@ -60,7 +60,7 @@ public final class Autos {
 
         ballSubsystem.spinUpLauncherCommand().withTimeout(1),
         ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS),
-        ballSubsystem.launchCommand().withTimeout(2),
+        ballSubsystem.launchCommand().withTimeout(5),
         
 
         ballSubsystem.runOnce(() -> ballSubsystem.stop()).withTimeout(0.01));
@@ -82,7 +82,7 @@ public final class Autos {
 
         ballSubsystem.spinUpLauncherCommand().withTimeout(1),
         ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS),
-        ballSubsystem.launchCommand().withTimeout(2),
+        ballSubsystem.launchCommand().withTimeout(5),
         
 
         ballSubsystem.runOnce(() -> ballSubsystem.stop()).withTimeout(0.01));
